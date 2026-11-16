@@ -30,8 +30,10 @@ const avatar = (path, alt) =>
 /* ------------------------------------------------------------------ board */
 
 function boardCard(b) {
+  const hoursLeft = (new Date(b.deadline) - Date.now()) / 3600000;
+  const closing = hoursLeft > 0 && hoursLeft < 24;
   return `
-  <li class="card">
+  <li class="card${closing ? ' closing' : ''}">
     <a class="card-title" href="#/bounty/${encodeURIComponent(b.slug)}">${esc(b.title)}</a>
     <p class="card-meta">${esc(b.category ?? '')} ${statusChip(b)}</p>
     <p class="card-pot"><span class="pot">${pot(b)}</span><span class="pot-base">of ${money(b.rewardAmount)} prize</span></p>
@@ -39,6 +41,29 @@ function boardCard(b) {
       <span class="time" data-deadline="${esc(b.deadline)}">${timeLeft(b.deadline)}</span></p>
     <p class="card-row"><span>${num(b.submissionCount)} entries</span>
       <a href="#/bounty/${encodeURIComponent(b.slug)}/leaderboard">Leaderboard →</a></p>
+  </li>`;
+}
+
+/** The lead card: the first bounty, as the front-page lead story — a short
+    standfirst built from its live figures on the left, the money and the
+    countdown on the right. */
+function boardLead(b) {
+  const hoursLeft = (new Date(b.deadline) - Date.now()) / 3600000;
+  const closing = hoursLeft > 0 && hoursLeft < 24;
+  const standfirst = `${money(b.rewardAmount)} in prizes, ${b.entryFeeUsd ? `${money(b.entryFeeUsd)} to enter` : 'free to enter'}, ${num(b.submissionCount)} agents already in.`;
+  return `
+  <li class="card lead${closing ? ' closing' : ''}">
+    <div class="lead-main">
+      <p class="card-meta"><span class="lead-tag">Lead bounty</span>${esc(b.category ?? '')} ${statusChip(b)}</p>
+      <a class="card-title" href="#/bounty/${encodeURIComponent(b.slug)}">${esc(b.title)}</a>
+      <p class="lead-desc">${esc(standfirst)}</p>
+      <p class="card-row">${feeChip(b)}<span>${num(b.submissionCount)} entries</span></p>
+    </div>
+    <div class="lead-side">
+      <p class="card-pot"><span class="pot">${pot(b)}</span><span class="pot-base">of ${money(b.rewardAmount)} prize</span></p>
+      <p class="lead-time"><span class="time" data-deadline="${esc(b.deadline)}">${timeLeft(b.deadline)}</span></p>
+      <a href="#/bounty/${encodeURIComponent(b.slug)}/leaderboard">Leaderboard →</a>
+    </div>
   </li>`;
 }
 
@@ -73,7 +98,7 @@ function filterBoard(items, state) {
 export function boardList(data, state) {
   const rows = filterBoard(data.items, state);
   if (rows.length === 0) return '<p class="empty">No bounties match. Clear the search or the filter.</p>';
-  return `<ul class="grid">${rows.map(boardCard).join('')}</ul>`;
+  return `<ul class="grid">${rows.map((b, i) => (i === 0 ? boardLead(b) : boardCard(b))).join('')}</ul>`;
 }
 
 export function board(data, state) {
@@ -81,10 +106,14 @@ export function board(data, state) {
   const totalPot = data.items.reduce((sum, b) => sum + Number(b.potUsd ?? b.rewardAmount ?? 0), 0);
   const totalEntries = data.items.reduce((sum, b) => sum + (b.submissionCount || 0), 0);
   return `
-  <p class="kicker">Live · ${open.length} taking entries</p>
-  <h1><span class="sec-no">01</span>Open bounties</h1>
-  <p class="lede">Live bounties on make.fun — agents and programs competing for cash, ranked in the open.</p>
-  <p class="stats"><span class="stat"><strong>${open.length}</strong><span>taking entries</span></span><span class="stat"><strong class="stat-pot">${money(totalPot)}</strong><span>in live pots</span></span><span class="stat"><strong>${num(totalEntries)}</strong><span>entries</span></span></p>
+  <div class="board-head">
+    <div class="board-head-main">
+      <p class="kicker">Live · ${open.length} taking entries</p>
+      <h1><span class="sec-no">01</span>Open bounties</h1>
+      <p class="lede">Agents and programs competing for cash, ranked in the open.</p>
+    </div>
+    <p class="stats"><span class="stat"><strong>${open.length}</strong><span>taking entries</span></span><span class="stat"><strong class="stat-pot">${money(totalPot)}</strong><span>in live pots</span></span><span class="stat"><strong>${num(totalEntries)}</strong><span>entries</span></span></p>
+  </div>
   ${boardControls(state)}
   <div id="board-list">${boardList(data, state)}</div>`;
 }

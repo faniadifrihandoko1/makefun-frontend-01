@@ -66,11 +66,11 @@ h3, h4 { margin: 24px 0 8px; }
 }
 
 .kicker {
-  margin: 20px 0 0;
+  margin: 14px 0 0;
   font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--amber-deep);
 }
-.lede { font-family: Georgia, "Times New Roman", serif; font-size: 1.0625rem; color: var(--ink-soft); margin: 0 0 20px; max-width: 62ch; }
+.lede { font-family: Georgia, "Times New Roman", serif; font-size: 1.0625rem; color: var(--ink-soft); margin: 0 0 14px; max-width: 62ch; }
 .muted { color: var(--muted); }
 .note { color: var(--muted); font-size: 0.875rem; }
 .empty { color: var(--muted); padding: 28px 0; }
@@ -79,26 +79,32 @@ h3, h4 { margin: 24px 0 8px; }
 .crumbs a { color: var(--muted); }
 .crumbs a:hover { color: var(--amber-deep); }
 
-/* ---- masthead / footer: double rules, no sticky, no blur ---- */
+/* ---- nameplate: a newspaper front page — double rules above and below,
+   a large serif name, and a live dateline in the nameplate row ---- */
 
-.top {
-  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+.top { padding: 12px 0 10px; border-top: 4px double var(--ink); border-bottom: 4px double var(--ink); }
+
+.nameplate {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
   gap: 4px 16px;
-  padding: 18px 0 12px;
-  border-bottom: 4px double var(--ink);
 }
+
+/* The dateline sits right-aligned above the live note, in the nameplate row,
+   so the masthead stays one compact band instead of growing a full row. */
+.mast-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.dateline { margin: 0; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); }
+.top-note { margin: 0; font-size: 0.8125rem; color: var(--muted); display: flex; align-items: center; gap: 10px; }
 
 .brand {
   font-family: Georgia, "Times New Roman", serif;
-  font-weight: 700; font-size: 1.5rem; color: var(--ink); text-decoration: none; letter-spacing: -0.01em;
+  font-weight: 700; font-size: 2.125rem; color: var(--ink); text-decoration: none; letter-spacing: -0.01em;
 }
 .brand span { color: var(--amber-deep); font-style: italic; font-weight: 700; }
 .brand::before {
-  content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 10px;
+  content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 10px;
   background: var(--amber);
 }
 
-.top-note { margin: 0; font-size: 0.8125rem; color: var(--muted); display: flex; align-items: center; gap: 10px; }
 #live-note::before {
   content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px;
   background: var(--ok);
@@ -115,9 +121,16 @@ footer { margin-top: 56px; padding-top: 18px; border-top: 4px double var(--ink);
 
 /* ---- board ---- */
 
+/* The header band: heading on the left, the stats as one tidy strip on the
+   right, so the first card sits well above the fold. */
+.board-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 4px 24px; margin-bottom: 12px; }
+.board-head-main { min-width: 0; }
+.board-head-main .lede { margin-bottom: 0; }
+.board-head .stats { margin: 0 0 2px; }
+
 .stats {
   display: flex; flex-wrap: wrap; align-items: center;
-  margin: 0 0 20px; padding: 14px 0;
+  padding: 10px 0;
   font-size: 0.9375rem; color: var(--muted);
   background: var(--panel); border: 1.5px solid var(--ink);
 }
@@ -126,7 +139,12 @@ footer { margin-top: 56px; padding-top: 18px; border-top: 4px double var(--ink);
 .stats strong { font-variant-numeric: tabular-nums; color: var(--ink); font-size: 1.0625rem; }
 .stats .stat-pot { color: var(--amber-deep); }
 
-.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 18px; }
+/* The controls as one index bar: hairlines above and below, 44px controls. */
+.controls {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  margin: 0 0 14px; padding: 8px 0;
+  border-top: 1px solid var(--rule-strong); border-bottom: 1px solid var(--rule-strong);
+}
 .controls input[type="search"] {
   flex: 1 1 240px; min-width: 0; height: 44px;
   font: inherit; padding: 0 13px; color: var(--ink);
@@ -154,38 +172,57 @@ footer { margin-top: 56px; padding-top: 18px; border-top: 4px double var(--ink);
 .grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 
 .card {
-  display: flex; flex-direction: column; gap: 9px;
-  padding: 18px; border: 1px solid var(--ink); background: var(--panel);
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 22px; border: 1px solid var(--ink); background: var(--panel);
 }
 .card:hover { border-color: var(--amber-deep); box-shadow: 4px 4px 0 var(--amber); }
 .card-title {
   font-family: Georgia, "Times New Roman", serif;
-  font-weight: 700; font-size: 1.125rem; line-height: 1.3; color: var(--ink); text-decoration: none;
+  font-weight: 700; font-size: 1.1875rem; line-height: 1.3; color: var(--ink); text-decoration: none;
 }
 .card-title:hover { color: var(--amber-deep); }
 .card-meta { margin: 0; font-size: 0.8125rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
 .card-pot { margin: 0; display: flex; align-items: baseline; gap: 9px; }
-.pot { font-size: 1.625rem; font-weight: 800; color: var(--amber); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.pot { font-size: 1.75rem; font-weight: 800; color: var(--amber); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
 .pot-base { font-size: 0.8125rem; color: var(--muted); }
 .card-row { margin: 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; font-size: 0.9375rem; }
+/* The footer row sits behind a hairline, apart from the figures above it. */
+.card-row:last-child { border-top: 1px solid var(--rule); padding-top: 11px; }
+.card-row .time { font-size: 1rem; }
+/* A bounty closing within a day carries an amber square by its countdown. */
+.card.closing .time::before {
+  content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 7px;
+  background: var(--amber);
+}
 .time { font-weight: 700; color: var(--amber-deep); font-variant-numeric: tabular-nums; }
 
-/* The card that sorts first spans the row: the most urgent bounty, at full
-   width, with a hard amber offset edge. */
-.grid .card:first-child {
+/* The lead card: the front-page lead story — standfirst on the left, the
+   money and the countdown on the right, behind a hairline. */
+.grid .card.lead {
   grid-column: 1 / -1;
-  display: grid; grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: 28px; row-gap: 3px; align-items: center;
-  background: var(--raised);
-  border: 2px solid var(--ink);
+  display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 12px 32px; padding: 24px 26px;
+  background: var(--raised); border: 2px solid var(--ink);
   box-shadow: 6px 6px 0 var(--amber);
 }
-.grid .card:first-child .card-title { grid-column: 1; grid-row: 1; font-size: 1.5rem; }
-.grid .card:first-child .card-meta { grid-column: 1; grid-row: 2; }
-.grid .card:first-child .card-pot { grid-column: 2; grid-row: 1 / span 2; flex-direction: column; align-items: flex-end; gap: 0; }
-.grid .card:first-child .pot { font-size: 2.375rem; }
-.grid .card:first-child .card-row:nth-child(4) { grid-column: 1; grid-row: 3; justify-content: flex-start; }
-.grid .card:first-child .card-row:nth-child(5) { grid-column: 2; grid-row: 3; justify-content: flex-end; }
+.lead-main { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.lead-main .card-title { font-size: 1.75rem; line-height: 1.2; }
+.lead-tag {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--amber-deep);
+}
+.lead-desc { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.0625rem; line-height: 1.55; color: var(--ink-soft); }
+.lead-main .card-row:last-child { border-top: 0; padding-top: 0; }
+.lead-side {
+  display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
+  gap: 8px; min-width: 0; text-align: right;
+  border-left: 1px solid var(--rule); padding-left: 28px;
+}
+.lead-side .card-pot { flex-direction: column; align-items: flex-end; gap: 0; }
+.lead-side .pot { font-size: 2.75rem; }
+.lead-time { margin: 0; }
+.lead-time .time { font-size: 1.25rem; }
+.lead-side > a { font-weight: 700; }
 
 .chip {
   display: inline-block; font-size: 0.72rem; font-weight: 700; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase;
@@ -346,16 +383,21 @@ td.entry-title { max-width: 420px; }
   body { padding: 0 12px 48px; }
   h1 { font-size: 1.625rem; }
   .pot { font-size: 1.5rem; }
-  .top { flex-direction: column; align-items: flex-start; }
+  .nameplate { flex-direction: column; align-items: flex-start; }
+  .mast-meta { align-items: flex-start; }
+  .brand { font-size: 1.75rem; }
   .facts { grid-template-columns: 1fr; }
   .fact:nth-child(2) { border-top: 1px solid var(--rule); }
   .fact:nth-child(even) { border-left: 0; }
   .pot-hero-num { font-size: 2.25rem; }
   .profile-head { flex-direction: column; }
-  .grid .card:first-child { display: flex; box-shadow: 4px 4px 0 var(--amber); }
-  .grid .card:first-child .pot { font-size: 1.75rem; }
-  .grid .card:first-child .card-pot { align-items: baseline; flex-direction: row; }
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; padding: 0; }
+  .grid .card.lead { display: flex; flex-direction: column; box-shadow: 4px 4px 0 var(--amber); }
+  .grid .card.lead .pot { font-size: 2rem; }
+  .lead-main .card-title { font-size: 1.375rem; }
+  .lead-side { align-items: flex-start; text-align: left; border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 14px; }
+  .lead-side .card-pot { align-items: baseline; flex-direction: row; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; padding: 0; margin: 0; width: 100%; }
+  .board-head { flex-direction: column; align-items: stretch; }
   .stat { flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px 14px; font-size: 0.8125rem; }
   .leaderboard-table td.rank { font-size: 1.25rem; }
   .rate-cell { min-width: 96px; }

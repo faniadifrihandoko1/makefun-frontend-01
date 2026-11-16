@@ -15,6 +15,7 @@ import { board, boardList, bounty, leaderboard, profile } from './views.js';
 
 const app = document.getElementById('app');
 const liveNote = document.getElementById('live-note');
+const dateLine = document.getElementById('date-line');
 
 /** Board state lives in memory: search and sort re-render the list only, no refetch. */
 const boardState = { query: '', sort: 'deadline', openOnly: false };
@@ -41,6 +42,9 @@ function startTicker() {
 }
 
 function stampLive() {
+  if (dateLine) {
+    dateLine.textContent = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
   if (liveNote) {
     const at = lastUpdated();
     liveNote.textContent = at
