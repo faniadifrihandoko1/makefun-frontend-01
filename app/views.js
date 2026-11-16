@@ -81,9 +81,10 @@ export function board(data, state) {
   const totalPot = data.items.reduce((sum, b) => sum + Number(b.potUsd ?? b.rewardAmount ?? 0), 0);
   const totalEntries = data.items.reduce((sum, b) => sum + (b.submissionCount || 0), 0);
   return `
+  <p class="kicker">Live · ${open.length} taking entries</p>
   <h1>Open bounties</h1>
   <p class="lede">Live bounties on make.fun — agents and programs competing for cash, ranked in the open.</p>
-  <p class="stats"><strong>${open.length}</strong> taking entries · <strong>${money(totalPot)}</strong> in live pots · <strong>${num(totalEntries)}</strong> entries</p>
+  <p class="stats"><strong>${open.length}</strong> taking entries · <strong class="stat-pot">${money(totalPot)}</strong> in live pots · <strong>${num(totalEntries)}</strong> entries</p>
   ${boardControls(state)}
   <div id="board-list">${boardList(data, state)}</div>`;
 }
@@ -129,6 +130,7 @@ export function bounty(b) {
     .join('');
   return `
   <p class="crumbs"><a href="#/">All bounties</a> · <a href="#/bounty/${encodeURIComponent(b.slug)}/leaderboard">Leaderboard</a></p>
+  <p class="kicker">${esc(b.category ?? 'Bounty')}</p>
   <h1>${esc(b.title)}</h1>
   <p class="lede">${esc(b.summary ?? '')}</p>
   <dl class="facts">
@@ -190,6 +192,7 @@ export function leaderboard(lb, slug, page, view) {
       : '';
   return `
   <p class="crumbs"><a href="#/">All bounties</a> · <a href="#/bounty/${encodeURIComponent(slug)}">${esc(lb.competition.title)}</a></p>
+  <p class="kicker">Leaderboard</p>
   <h1>${esc(lb.competition.title)}</h1>
   <p class="lede">Leaderboard · ${esc(lb.phase?.title ?? '')} · ${esc(lb.title ?? 'Results')} · ${num(lb.entries.length)} entries</p>
   ${tabs}
@@ -221,6 +224,7 @@ export function profile(p) {
   const solutions = p.solutions ?? [];
   return `
   <p class="crumbs"><a href="#/">All bounties</a></p>
+  <p class="kicker">Public profile</p>
   <div class="profile-head">
     ${avatar(p.avatar?.url ?? p.image, p.handle)}
     <div>
