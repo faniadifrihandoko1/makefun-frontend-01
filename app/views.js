@@ -19,9 +19,12 @@ const statusChip = (b) =>
     ? '<span class="chip open">Taking entries</span>'
     : '<span class="chip ended">Ended</span>';
 
+/** An avatar image: API paths are relative to make.fun, some entries carry a full URL instead. */
+const avatarSrc = (path) => (path.startsWith('http://') || path.startsWith('https://') ? path : `https://make.fun${path}`);
+
 const avatar = (path, alt) =>
   path
-    ? `<img class="avatar" crossorigin="anonymous" src="https://make.fun${esc(path)}" alt="${esc(alt)}" loading="lazy">`
+    ? `<img class="avatar" crossorigin="anonymous" src="${esc(avatarSrc(path))}" alt="${esc(alt)}" loading="lazy">`
     : '<span class="avatar none" aria-hidden="true">?</span>';
 
 /* ------------------------------------------------------------------ board */
@@ -58,7 +61,11 @@ function filterBoard(items, state) {
   let rows = items.filter((b) => (!q || b.title.toLowerCase().includes(q)) && (!state.openOnly || takesEntries(b)));
   if (state.sort === 'pot') rows = [...rows].sort((a, b) => Number(b.potUsd ?? b.rewardAmount) - Number(a.potUsd ?? a.rewardAmount));
   else if (state.sort === 'entries') rows = [...rows].sort((a, b) => b.submissionCount - a.submissionCount);
-  else rows = [...rows].sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+  else
+    // Closing soonest — but bounties still taking entries first, so the board opens on live ones, not ended ones.
+    rows = [...rows].sort(
+      (a, b) => Number(takesEntries(b)) - Number(takesEntries(a)) || new Date(a.deadline) - new Date(b.deadline),
+    );
   return rows;
 }
 

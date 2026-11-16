@@ -140,5 +140,21 @@ document.getElementById('refresh').addEventListener('click', () => {
   location.reload();
 });
 
+/** An avatar that fails to load (a removed account image, a blocked host) becomes the '?' placeholder instead of a broken icon. */
+app.addEventListener(
+  'error',
+  (event) => {
+    const target = event.target;
+    if (target instanceof HTMLImageElement && target.classList.contains('avatar')) {
+      const placeholder = document.createElement('span');
+      placeholder.className = 'avatar none';
+      placeholder.setAttribute('aria-hidden', 'true');
+      placeholder.textContent = '?';
+      target.replaceWith(placeholder);
+    }
+  },
+  true,
+);
+
 window.addEventListener('hashchange', render);
 render();
