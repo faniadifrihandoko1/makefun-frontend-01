@@ -101,14 +101,17 @@ function rewardsTable(b) {
       if (last && last.amountUsd === r.amountUsd && last.to === r.place - 1) last.to = r.place;
       else grouped.push({ from: r.place, to: r.place, baseUsd: r.baseUsd, feeShareUsd: r.feeShareUsd, amountUsd: r.amountUsd });
     }
+    const out = [];
+    grouped.forEach((g, i) => {
+      if (g.to > g.from) out.push(`<tr class="band"><td colspan="4">Places ${g.from}–${g.to}</td></tr>`);
+      out.push(
+        `<tr${i === 0 ? ' class="champ"' : ''}><td class="place">${g.from === g.to ? `#${g.from}` : `#${g.from}–${g.to}`}${i === 0 ? '<i class="sq" aria-hidden="true"></i>' : ''}</td><td>${money(g.baseUsd)}</td><td>${money(g.feeShareUsd)}</td><td class="total"><strong>${money(g.amountUsd)}</strong></td></tr>`,
+      );
+    });
     return `
     <table class="rewards">
       <thead><tr><th>Place</th><th>Prize</th><th>Fee share</th><th>Total now</th></tr></thead>
-      <tbody>${grouped
-        .map(
-          (g) => `<tr><td>${g.from === g.to ? `#${g.from}` : `#${g.from}–${g.to}`}</td><td>${money(g.baseUsd)}</td><td>${money(g.feeShareUsd)}</td><td><strong>${money(g.amountUsd)}</strong></td></tr>`,
-        )
-        .join('')}</tbody>
+      <tbody>${out.join('')}</tbody>
     </table>
     <p class="note">Totals grow as entry fees are paid in — ${num(b.entryFeePayers ?? 0)} ${b.entryFeePayers === 1 ? 'account has' : 'accounts have'} paid the fee so far.</p>`;
   }
@@ -120,7 +123,7 @@ function rewardsTable(b) {
   return `
   <table class="rewards">
     <thead><tr><th>Place</th><th>Prize</th></tr></thead>
-    <tbody>${places.map((p) => `<tr><td>#${p}</td><td><strong>${money(map[p])}</strong></td></tr>`).join('')}</tbody>
+    <tbody>${places.map((p, i) => `<tr${i === 0 ? ' class="champ"' : ''}><td class="place">#${p}${i === 0 ? '<i class="sq" aria-hidden="true"></i>' : ''}</td><td class="total"><strong>${money(map[p])}</strong></td></tr>`).join('')}</tbody>
   </table>`;
 }
 
@@ -133,21 +136,22 @@ export function bounty(b) {
   <p class="kicker">${esc(b.category ?? 'Bounty')}</p>
   <h1>${esc(b.title)}</h1>
   <p class="lede">${esc(b.summary ?? '')}</p>
+  <p class="pot-hero"><span class="pot-kicker">Live pot</span><span class="pot-hero-num">${pot(b)}</span><span class="pot-hero-base">of ${money(b.rewardAmount)} prize</span></p>
   <dl class="facts">
-    <dt>Live pot</dt><dd><strong class="pot">${pot(b)}</strong> <span class="muted">(prize ${money(b.rewardAmount)})</span></dd>
-    <dt>Entry fee</dt><dd>${b.entryFeeUsd ? money(b.entryFeeUsd) : 'None — free to enter'}</dd>
-    <dt>Deadline</dt><dd>${date(b.deadline)} · <span class="time" data-deadline="${esc(b.deadline)}">${timeLeft(b.deadline)}</span></dd>
-    <dt>Opens</dt><dd>${b.opensAt ? date(b.opensAt) : '—'}</dd>
-    <dt>Status</dt><dd>${esc(b.status)} ${takesEntries(b) ? '· taking entries' : '· entries closed'}</dd>
-    <dt>Entries</dt><dd>${num(b.submissionCount)}</dd>
+    <div class="fact"><dt>Entry fee</dt><dd>${b.entryFeeUsd ? money(b.entryFeeUsd) : 'None — free to enter'}</dd></div>
+    <div class="fact"><dt>Status</dt><dd>${statusChip(b)}</dd></div>
+    <div class="fact wide"><dt>Deadline</dt><dd>${date(b.deadline)} · <span class="time" data-deadline="${esc(b.deadline)}">${timeLeft(b.deadline)}</span></dd></div>
+    <div class="fact"><dt>Opens</dt><dd>${b.opensAt ? date(b.opensAt) : '—'}</dd></div>
+    <div class="fact"><dt>Entries</dt><dd>${num(b.submissionCount)}</dd></div>
   </dl>
+  <p class="actions"><a class="button" href="#/bounty/${encodeURIComponent(b.slug)}/leaderboard">See the leaderboard →</a><a class="button ghost" href="#/">← All bounties</a></p>
   <h2><span class="sec-no">02</span>Rewards</h2>
   ${rewardsTable(b)}
   <h2><span class="sec-no">03</span>Description</h2>
   <div class="prose">${md(b.description ?? '')}</div>
   ${b.rules ? `<details class="rules"><summary>Full rules</summary><div class="prose">${md(b.rules)}</div></details>` : ''}
-  ${phases ? `<h2><span class="sec-no">04</span>Phases</h2><ul>${phases}</ul>` : ''}
-  <p><a class="button" href="#/bounty/${encodeURIComponent(b.slug)}/leaderboard">See the leaderboard →</a></p>`;
+  ${phases ? `<h2><span class="sec-no">04</span>Phases</h2><ol class="phases">${phases}</ol>` : ''}
+`;
 }
 
 /* ------------------------------------------------------------- leaderboard */

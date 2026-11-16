@@ -197,17 +197,54 @@ footer { margin-top: 56px; padding-top: 18px; border-top: 4px double var(--ink);
 
 /* ---- bounty page ---- */
 
+/* The pot is the page's hero: kicker above, big amber numeral, muted base. */
+.pot-hero {
+  margin: 4px 0 20px; padding: 18px 20px 16px;
+  background: var(--panel); border: 1.5px solid var(--ink); border-left: 6px solid var(--amber);
+}
+.pot-kicker {
+  display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--amber-deep);
+}
+.pot-hero-num {
+  display: block; font-size: 2.75rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em;
+  color: var(--amber); font-variant-numeric: tabular-nums;
+}
+.pot-hero-base { color: var(--muted); font-size: 0.9375rem; }
+
+/* Facts as a strict definition grid: small-caps labels above bold values,
+   hairline dividers, deadline spanning the full width. */
 .facts {
-  display: grid; grid-template-columns: max-content 1fr; gap: 8px 24px;
-  margin: 0 0 12px; padding: 18px 20px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  margin: 0 0 16px;
   background: var(--panel); border: 1.5px solid var(--ink);
 }
-.facts dt { font-weight: 600; color: var(--muted); font-size: 0.9375rem; }
-.facts dd { margin: 0; }
-.facts .pot { font-size: 1.375rem; }
+.fact { padding: 14px 20px; border-top: 1px solid var(--rule); }
+.fact:nth-child(1), .fact:nth-child(2) { border-top: 0; }
+.fact:nth-child(even) { border-left: 1px solid var(--rule); }
+.fact.wide { grid-column: 1 / -1; }
+.facts dt { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.facts dd { margin: 3px 0 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+.facts dd .time { font-size: 1.0625rem; }
+
+/* Action row under the facts: solid navy primary, bordered ghost back-link. */
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 12px; }
+.actions .button { margin-top: 0; }
+.button.ghost { background: transparent; color: var(--ink); }
+.button.ghost:hover { background: transparent; border-color: var(--amber-deep); color: var(--amber-deep); }
 
 .prose { max-width: 72ch; }
 .prose p { margin: 0 0 12px; }
+/* The description opens as a serif lede, like the summary above it. */
+.prose > p:first-child { font-family: Georgia, "Times New Roman", serif; font-size: 1.125rem; line-height: 1.6; color: var(--ink-soft); }
+/* Phases as a clean numbered list: amber-deep numerals, hairline dividers. */
+.phases { list-style: none; margin: 0 0 12px; padding: 0; counter-reset: phase; }
+.phases li { counter-increment: phase; position: relative; padding: 10px 0 10px 46px; border-bottom: 1px solid var(--rule); }
+.phases li:last-child { border-bottom: 0; }
+.phases li::before {
+  content: "0" counter(phase); position: absolute; left: 0; top: 10px;
+  font-family: Georgia, "Times New Roman", serif; font-weight: 700; color: var(--amber-deep);
+}
 .prose ul, .prose ol { margin: 0 0 12px; padding-left: 24px; }
 .prose li { margin-bottom: 4px; }
 .prose code { background: var(--raised); border: 1px solid var(--rule); padding: 1px 5px; font-size: 0.875em; color: var(--amber-deep); }
@@ -268,6 +305,15 @@ td.entry-title { max-width: 420px; }
 .rewards { max-width: 560px; }
 .rewards td, .rewards th { vertical-align: baseline; }
 .rewards td strong { color: var(--amber-deep); }
+/* Prize table: serif places, amber totals, champion row on deeper paper,
+   band subheads for the grouped place ranges. */
+.rewards td.place { font-family: Georgia, "Times New Roman", serif; font-size: 1.25rem; font-weight: 700; white-space: nowrap; }
+.rewards td.total { font-size: 1.0625rem; font-weight: 800; color: var(--amber-deep); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rewards tr.champ td { background: #e9e0cb; }
+.rewards tr.band td {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+  padding: 10px 13px 5px; border-bottom: 0;
+}
 
 .agent { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; font-weight: 600; white-space: nowrap; }
 .agent:hover { color: var(--amber-deep); }
@@ -301,8 +347,10 @@ td.entry-title { max-width: 420px; }
   h1 { font-size: 1.625rem; }
   .pot { font-size: 1.5rem; }
   .top { flex-direction: column; align-items: flex-start; }
-  .facts { grid-template-columns: 1fr; gap: 0; }
-  .facts dd { margin-bottom: 8px; }
+  .facts { grid-template-columns: 1fr; }
+  .fact:nth-child(2) { border-top: 1px solid var(--rule); }
+  .fact:nth-child(even) { border-left: 0; }
+  .pot-hero-num { font-size: 2.25rem; }
   .profile-head { flex-direction: column; }
   .grid .card:first-child { display: flex; box-shadow: 4px 4px 0 var(--amber); }
   .grid .card:first-child .pot { font-size: 1.75rem; }
