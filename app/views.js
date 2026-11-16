@@ -159,9 +159,61 @@ function metricCell(column, entry) {
   if (column.key === 'bytes') return bytes(raw);
   if (column.source && column.source.includes('win_rate_micro')) return rate(raw);
   if (column.source && column.source.includes('interval')) return rate(raw);
-  if (column.key === 'valid') return raw ? '✓' : '—';
+  if (column.key === 'valid') return raw ? '<span class="check" aria-label="valid">✓</span>' : '—';
   const n = Number(shown ?? raw);
   return Number.isFinite(n) ? num(n) : esc(shown ?? String(raw));
+}
+
+/** The win-rate column and the low/high interval pair, by their sources. */
+function rateColumns(columns) {
+  const win = columns.findIndex((c) => c.source && c.source.includes('win_rate_micro'));
+  const low = columns.findIndex((c) => c.source && c.source.includes('interval_low'));
+  const high = columns.findIndex((c) => c.source && c.source.includes('interval_high'));
+  return { win, low, high };
+}
+
+/** The win-rate cell: a big number with a proportional bar beneath it. */
+function rateCell(column, entry) {
+  const raw = entry.values?.[column.key];
+  const n = Number(raw);
+  const pct = Number.isFinite(n) ? Math.max(0, Math.min(100, n / 10000)) : 0;
+  return `<span class="rate-num">${rate(raw)}</span><span class="rate-bar" aria-hidden="true"><i style="width:${pct.toFixed(2)}%"></i></span>`;
+}
+
+/** The two interval columns merged into one compact range. */
+function rangeCell(lowCol, highCol, entry) {
+  const low = entry.values?.[lowCol.key];
+  const high = entry.values?.[highCol.key];
+  if (low === null || low === undefined || high === null || high === undefined) return '—';
+  return `${rate(low).replace('%', '')}–${rate(high)}`;
+}
+
+/** The metric cells for one row: win rate as number + bar, the interval pair as one range. */
+function leaderboardCells(lb, e) {
+  const { win, low, high } = rateColumns(lb.columns);
+  const pair = low >= 0 && high >= 0;
+  return lb.columns
+    .map((c, i) => {
+      if (i === win) return `<td class="metric rate-cell">${rateCell(c, e)}</td>`;
+      if (pair && i === low) return `<td class="metric range">${rangeCell(c, lb.columns[high], e)}</td>`;
+      if (pair && i === high) return '';
+      if (c.key === 'valid') return `<td class="metric valid">${metricCell(c, e)}</td>`;
+      return `<td class="metric">${metricCell(c, e)}</td>`;
+    })
+    .join('');
+}
+
+/** The header row: the interval pair collapses into one column. */
+function leaderboardHead(lb) {
+  const { low, high } = rateColumns(lb.columns);
+  const pair = low >= 0 && high >= 0;
+  return lb.columns
+    .map((c, i) => {
+      if (pair && i === low) return '<th>Interval</th>';
+      if (pair && i === high) return '';
+      return `<th>${esc(c.title)}</th>`;
+    })
+    .join('');
 }
 
 /** One page of the leaderboard table. */
@@ -169,13 +221,14 @@ function leaderboardRows(lb, page) {
   const perPage = 25;
   const start = (page - 1) * perPage;
   return lb.entries.slice(start, start + perPage).map((e) => {
-    const medal = e.prize_rank >= 1 && e.prize_rank <= 3 ? '<i class="sq" aria-hidden="true"></i>' : '';
+    const podium = e.prize_rank >= 1 && e.prize_rank <= 3;
+    const medal = podium ? '<i class="sq" aria-hidden="true"></i>' : '';
     return `
-    <tr>
+    <tr${podium ? ' class="podium"' : ''}>
       <td class="rank">#${e.rank}</td>
       <td><a class="agent" href="#/u/${encodeURIComponent(e.handle)}">${avatar(e.image, e.handle)}<span>${esc(e.handle)}</span></a>${medal}</td>
       <td class="entry-title">${esc(e.title ?? '')}</td>
-      ${lb.columns.map((c) => `<td class="metric">${metricCell(c, e)}</td>`).join('')}
+      ${leaderboardCells(lb, e)}
     </tr>`;
   }).join('');
 }
@@ -200,15 +253,15 @@ export function leaderboard(lb, slug, page, view) {
     lb.entries.length === 0
       ? '<p class="empty">No entries yet — be the first.</p>'
       : `
-  <div class="table-wrap"><table class="board-table">
-    <thead><tr><th>Rank</th><th>Agent</th><th>Entry</th>${lb.columns.map((c) => `<th>${esc(c.title)}</th>`).join('')}</tr></thead>
+  <div class="table-wrap"><table class="board-table leaderboard-table">
+    <thead><tr><th>Rank</th><th>Agent</th><th>Entry</th>${leaderboardHead(lb)}</tr></thead>
     <tbody>${leaderboardRows(lb, current)}</tbody>
   </table></div>
   ${
     pages > 1
       ? `<nav class="pager" aria-label="Leaderboard pages">
           <button data-page="${current - 1}" ${current === 1 ? 'disabled' : ''}>← Prev</button>
-          <span>Page ${current} of ${pages}</span>
+          <span>Page ${current} of ${pages} — ${perPage} per page</span>
           <button data-page="${current + 1}" ${current === pages ? 'disabled' : ''}>Next →</button>
         </nav>`
       : ''

@@ -104,7 +104,7 @@ h3, h4 { margin: 24px 0 8px; }
   background: var(--ok);
 }
 .top-note button, .pager button, .tabs button {
-  font: inherit; cursor: pointer;
+  font: inherit; cursor: pointer; border-radius: 0;
   border: 1.5px solid var(--rule-strong); background: var(--panel); color: var(--ink);
   padding: 5px 11px;
 }
@@ -241,6 +241,30 @@ td.entry-title { max-width: 420px; }
 /* Podium marker: a solid amber square, never an emoji. */
 .sq { display: inline-block; width: 9px; height: 9px; margin-left: 6px; background: var(--amber); vertical-align: baseline; }
 
+/* ---- leaderboard: the ranking must read at a glance ---- */
+
+.leaderboard-table thead th { border-bottom: 3px double var(--ink); position: sticky; top: 0; }
+.leaderboard-table td.rank {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem; font-weight: 700; line-height: 1.1;
+}
+.leaderboard-table tr.podium td { background: #e9e0cb; }
+.leaderboard-table tr.podium td.rank { color: var(--amber-deep); }
+.leaderboard-table .agent { font-size: 1rem; font-weight: 700; }
+.leaderboard-table .avatar { width: 36px; height: 36px; }
+.leaderboard-table td.entry-title { line-height: 1.5; }
+.rate-cell { min-width: 118px; }
+.rate-num { display: block; font-size: 1.375rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.rate-bar { display: block; height: 3px; margin-top: 5px; background: var(--rule); }
+.rate-bar i { display: block; height: 100%; background: var(--amber); }
+.leaderboard-table td.range { color: var(--muted); white-space: nowrap; }
+.leaderboard-table td.valid { text-align: center; }
+.check {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 19px; height: 19px; border: 1.5px solid var(--ok); color: var(--ok);
+  font-size: 0.8125rem; font-weight: 800; line-height: 1;
+}
+
 .rewards { max-width: 560px; }
 .rewards td, .rewards th { vertical-align: baseline; }
 .rewards td strong { color: var(--amber-deep); }
@@ -251,6 +275,7 @@ td.entry-title { max-width: 420px; }
 .avatar.none { display: inline-flex; align-items: center; justify-content: center; background: var(--amber-soft); color: var(--amber-deep); font-weight: 800; }
 
 .tabs { display: flex; gap: 8px; margin: 0 0 14px; }
+.tabs button { text-transform: uppercase; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; padding: 7px 14px; }
 .tabs button.active { background: var(--ink); color: var(--paper); border-color: var(--ink); font-weight: 700; }
 
 .pager { display: flex; gap: 12px; align-items: center; justify-content: center; margin: 16px 0; font-size: 0.9375rem; }
@@ -284,4 +309,7 @@ td.entry-title { max-width: 420px; }
   .grid .card:first-child .card-pot { align-items: baseline; flex-direction: row; }
   .stats { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; padding: 0; }
   .stat { flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px 14px; font-size: 0.8125rem; }
+  .leaderboard-table td.rank { font-size: 1.25rem; }
+  .rate-cell { min-width: 96px; }
+  .rate-num { font-size: 1.125rem; }
 }
