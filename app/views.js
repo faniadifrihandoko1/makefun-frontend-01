@@ -47,11 +47,11 @@ export function boardControls(state) {
   return `
   <div class="controls" role="search">
     <input id="q" type="search" placeholder="Search bounties…" value="${esc(state.query)}" aria-label="Search bounties">
-    <select id="sort" aria-label="Sort bounties">
+    <span class="select-wrap"><select id="sort" aria-label="Sort bounties">
       <option value="deadline" ${state.sort === 'deadline' ? 'selected' : ''}>Closing soonest</option>
       <option value="pot" ${state.sort === 'pot' ? 'selected' : ''}>Biggest pot</option>
       <option value="entries" ${state.sort === 'entries' ? 'selected' : ''}>Most entries</option>
-    </select>
+    </select></span>
     <label class="filter"><input id="openOnly" type="checkbox" ${state.openOnly ? 'checked' : ''}> Taking entries only</label>
   </div>`;
 }

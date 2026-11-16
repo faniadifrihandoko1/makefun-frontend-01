@@ -134,8 +134,18 @@ footer { margin-top: 56px; padding-top: 18px; border-top: 4px double var(--ink);
 }
 .controls input[type="search"]::placeholder { color: var(--faint); }
 .controls input[type="search"]:focus, .controls select:focus { border-color: var(--amber-deep); outline: 2px solid var(--amber-deep); outline-offset: 1px; }
+/* The sort select is de-natived: flat paper, navy border, and a chevron drawn
+   on the wrapper (a select cannot carry a ::after of its own). */
+.controls .select-wrap { position: relative; display: flex; flex: 0 0 auto; height: 44px; }
+.controls .select-wrap::after {
+  content: ""; position: absolute; right: 13px; top: 50%;
+  width: 0; height: 0; pointer-events: none;
+  border-left: 5px solid transparent; border-right: 5px solid transparent;
+  border-top: 6px solid var(--ink); transform: translateY(-50%);
+}
 .controls select {
-  font: inherit; height: 44px; padding: 0 10px; color: var(--ink);
+  -webkit-appearance: none; appearance: none; border-radius: 0; cursor: pointer;
+  font: inherit; height: 44px; padding: 0 34px 0 13px; color: var(--ink);
   border: 1.5px solid var(--rule-strong); background: var(--panel);
 }
 .controls .filter { font-size: 1rem; color: var(--ink); display: flex; align-items: center; gap: 9px; white-space: nowrap; height: 44px; }
