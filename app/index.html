@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>make.fun bounties</title>
+<meta name="description" content="A fast make.fun frontend: the live bounty board, bounty pages, leaderboards and public profiles, straight from make.fun's public API.">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="main.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#/">make.fun <span>bounties</span></a>
+  <p class="top-note"><span id="live-note">Live data from make.fun's public API</span> <button id="refresh" type="button">Refresh</button></p>
+</header>
+<main id="app"></main>
+<footer>
+  <p>Built for the make.fun frontend bounty. Data is live from <a href="https://make.fun/api/openapi.json">make.fun's public API</a> — no account, no sign-in, nothing stored.</p>
+</footer>
+<noscript><p>Turn JavaScript on to see the live bounties.</p></noscript>
+</body>
+</html>
