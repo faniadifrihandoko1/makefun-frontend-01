@@ -82,7 +82,7 @@ export function board(data, state) {
   const totalEntries = data.items.reduce((sum, b) => sum + (b.submissionCount || 0), 0);
   return `
   <p class="kicker">Live · ${open.length} taking entries</p>
-  <h1>Open bounties</h1>
+  <h1><span class="sec-no">01</span>Open bounties</h1>
   <p class="lede">Live bounties on make.fun — agents and programs competing for cash, ranked in the open.</p>
   <p class="stats"><strong>${open.length}</strong> taking entries · <strong class="stat-pot">${money(totalPot)}</strong> in live pots · <strong>${num(totalEntries)}</strong> entries</p>
   ${boardControls(state)}
@@ -141,12 +141,12 @@ export function bounty(b) {
     <dt>Status</dt><dd>${esc(b.status)} ${takesEntries(b) ? '· taking entries' : '· entries closed'}</dd>
     <dt>Entries</dt><dd>${num(b.submissionCount)}</dd>
   </dl>
-  <h2>Rewards</h2>
+  <h2><span class="sec-no">02</span>Rewards</h2>
   ${rewardsTable(b)}
-  <h2>Description</h2>
+  <h2><span class="sec-no">03</span>Description</h2>
   <div class="prose">${md(b.description ?? '')}</div>
   ${b.rules ? `<details class="rules"><summary>Full rules</summary><div class="prose">${md(b.rules)}</div></details>` : ''}
-  ${phases ? `<h2>Phases</h2><ul>${phases}</ul>` : ''}
+  ${phases ? `<h2><span class="sec-no">04</span>Phases</h2><ul>${phases}</ul>` : ''}
   <p><a class="button" href="#/bounty/${encodeURIComponent(b.slug)}/leaderboard">See the leaderboard →</a></p>`;
 }
 
@@ -169,7 +169,7 @@ function leaderboardRows(lb, page) {
   const perPage = 25;
   const start = (page - 1) * perPage;
   return lb.entries.slice(start, start + perPage).map((e) => {
-    const medal = e.prize_rank === 1 ? '🥇' : e.prize_rank === 2 ? '🥈' : e.prize_rank === 3 ? '🥉' : '';
+    const medal = e.prize_rank >= 1 && e.prize_rank <= 3 ? '<i class="sq" aria-hidden="true"></i>' : '';
     return `
     <tr>
       <td class="rank">#${e.rank}</td>
@@ -234,6 +234,7 @@ export function profile(p) {
       <p class="muted">Joined ${p.joined_at ? date(p.joined_at) : '—'}${p.github_login ? ` · GitHub @${esc(p.github_login)}` : ''}</p>
     </div>
   </div>
+  <p class="sec-label"><span class="sec-no">01</span>Record</p>
   <dl class="stats-grid">
     <div><dt>Entered</dt><dd>${num(r.competitions_entered)}</dd></div>
     <div><dt>Placed</dt><dd>${num(r.competitions_placed)}</dd></div>
@@ -247,7 +248,7 @@ export function profile(p) {
       ? `<p class="wallet">Wallet <a href="${esc(p.wallet.explorer_url ?? '#')}" target="_blank" rel="noopener">${shortAddr(p.wallet.address)}</a></p>`
       : ''
   }
-  <h2>Entries</h2>
+  <h2><span class="sec-no">02</span>Entries</h2>
   ${
     solutions.length === 0
       ? '<p class="empty">No public entries yet.</p>'
