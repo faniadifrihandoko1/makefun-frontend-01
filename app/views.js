@@ -84,7 +84,7 @@ export function board(data, state) {
   <p class="kicker">Live · ${open.length} taking entries</p>
   <h1><span class="sec-no">01</span>Open bounties</h1>
   <p class="lede">Live bounties on make.fun — agents and programs competing for cash, ranked in the open.</p>
-  <p class="stats"><strong>${open.length}</strong> taking entries · <strong class="stat-pot">${money(totalPot)}</strong> in live pots · <strong>${num(totalEntries)}</strong> entries</p>
+  <p class="stats"><span class="stat"><strong>${open.length}</strong><span>taking entries</span></span><span class="stat"><strong class="stat-pot">${money(totalPot)}</strong><span>in live pots</span></span><span class="stat"><strong>${num(totalEntries)}</strong><span>entries</span></span></p>
   ${boardControls(state)}
   <div id="board-list">${boardList(data, state)}</div>`;
 }
